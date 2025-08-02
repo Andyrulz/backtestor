@@ -1,0 +1,48 @@
+Starting backtest with 50265 pivots
+Dynamic Position Sizing: Active (Reset after 1 win)
+Base Capital: ₹100,000
+Risk Schedule: 3,5,8,12,15,18+ losses → 1.6%,1.2%,0.8%,0.4%,0.2%,0.1%
+================================================================================
+
+--- TRADE 1 SETUP ---
+Pivot: high at 7750.3 on 2015-11-13 11:20:00
+Entry: long at 7760.900000000001 on 2015-11-13 12:34:00
+SL: 7757.85, TP: Trailing
+Consecutive Losses: 0
+Dynamic Risk: 2.0%
+Position Size: 500 lots
+Risk Amount: ₹2000
+Trade closed: SL
+P&L: -3.1 points, ₹-38125
+New consecutive losses: 1
+Updated capital: ₹61875
+
+--- TRADE 2 SETUP ---
+Pivot: high at 7760.35 on 2015-11-13 13:35:00
+Entry: long at 7760.35 on 2015-11-13 14:48:01
+SL: 7758.0, TP: Trailing
+Consecutive Losses: 1
+Dynamic Risk: 2.0%
+Position Size: 309 lots
+Risk Amount: ₹1237
+Trade closed: SL
+P&L: -2.4 points, ₹-18154
+New consecutive losses: 2
+Updated capital: ₹43721
+
+--- TRADE 3 SETUP ---
+Pivot: low at 7757.65 on 2015-11-13 14:35:00
+Entry: short at 7728.099999999999 on 2015-11-16 09:33:00
+SL: 7732.0, TP: Trailing
+Consecutive Losses: 2
+Dynamic Risk: 2.0%
+Position Size: 218 lots
+Risk Amount: ₹874
+Trade closed: SL
+P&L: -3.9 points, ₹-21255
+New consecutive losses: 3
+Updated capital: ₹22466
+
+Backtest completed. Total trades: 5876
+Final consecutive losses: 1
+Final capital: ₹-292914

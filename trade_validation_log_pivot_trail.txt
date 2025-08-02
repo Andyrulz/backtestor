@@ -1,0 +1,84 @@
+5-MINUTE PIVOT BREAKOUT STRATEGY - DETAILED TRADE VALIDATION (PIVOT TRAIL EXIT)
+================================================================================
+Strategy: 5-min pivot breakout with marking candle retracement entry
+Parameters: 15,15 pivots, 5-bar marking window, 18-bar timeout, unlimited updates
+Risk Management: Initial 1:2 RR, then 1-min pivot trail exit, 0.1% of entry SL limit
+Exit Logic: Immediate 1-min pivot (5,5) trailing from entry vs original SL
+Pivot Usage: Reusable - allows multiple breakout attempts until pivot updates
+Dataset: NIFTY 1-min data with pivot trail exit validation logic
+================================================================================
+
+
+================================================================================
+TRADE SETUP #1 VALIDATION (PIVOT TRAIL EXIT)
+================================================================================
+Bar  338 | 14:52 | 8268.1/8275.1/8267.5/8275.1 | Entry: - | SL: - | Close: 8275.1 | LONG BREAKOUT: Pivot 8272.6 broken, High: 8275.1
+Bar  339 | 14:53 | 8275.4/8279.2/8275.1/8277.5 | Entry: - | SL: - | Close: 8277.5 | LONG BREAKOUT: Pivot 8272.6 broken, High: 8279.2
+Bar  340 | 14:54 | 8277.1/8280.7/8276.0/8276.0 | Entry: - | SL: - | Close: 8276.0 | MARKING CANDLE FOUND (LONG): Red candle, close in range [8275.1-8279.2]
+Bar  340 | 14:54 | 8277.1/8280.7/8276.0/8276.0 | Entry: 8280.8 | SL: 8276.0 | Close: 8276.0 | SETUP ACTIVATED: Entry 8280.8, SL 8276.0 (distance: 4.9, max: 8.3)
+Bar  341 | 14:55 | 8275.0/8276.0/8269.6/8270.0 | Entry: 8276.1 | SL: 8269.6 | Close: 8270.0 | MARKING UPDATE #1 (LONG Red): Entry 8280.8→8276.1, SL 8276.0→8269.6
+Bar  342 | 14:56 | 8269.5/8270.5/8268.3/8270.1 | Entry: 8270.6 | SL: 8268.3 | Close: 8270.1 | MARKING UPDATE #2 (LONG Green): Entry 8276.1→8270.6, SL 8269.6→8268.3
+Bar  343 | 14:57 | 8269.4/8270.1/8267.9/8268.0 | Entry: 8270.2 | SL: 8267.9 | Close: 8268.0 | MARKING UPDATE #3 (LONG Red): Entry 8270.6→8270.2, SL 8268.3→8267.9
+Bar  344 | 14:58 | 8267.9/8269.0/8264.2/8264.5 | Entry: 8270.2 | SL: 8267.9 | Close: 8264.5 | MAX UPDATES REACHED: Trade setup ignored (>3 updates)
+
+
+================================================================================
+TRADE SETUP #2 VALIDATION (PIVOT TRAIL EXIT)
+================================================================================
+Bar  346 | 15:00 | 8269.0/8275.0/8266.6/8274.5 | Entry: - | SL: - | Close: 8274.5 | LONG BREAKOUT: Pivot 8272.6 broken, High: 8275.0
+Bar  347 | 15:01 | 8274.4/8275.9/8269.8/8270.0 | Entry: - | SL: - | Close: 8270.0 | MARKING CANDLE FOUND (LONG): Red candle, close in range [8266.6-8275.0]
+Bar  347 | 15:01 | 8274.4/8275.9/8269.8/8270.0 | Entry: 8276.0 | SL: 8269.8 | Close: 8270.0 | SETUP ACTIVATED: Entry 8276.0, SL 8269.8 (distance: 6.2, max: 8.3)
+Bar  348 | 15:02 | 8269.5/8275.8/8268.6/8275.5 | Entry: 8275.9 | SL: 8268.6 | Close: 8275.5 | MARKING UPDATE #1 (LONG Green): Entry 8276.0→8275.9, SL 8269.8→8268.6
+Bar  349 | 15:03 | 8275.8/8277.8/8274.1/8274.2 | Entry: 8275.9 | SL: 8268.6 | Close: 8274.2 | TRADE ENTRY: LONG @ 8275.9 (High: 8277.8 > Entry)
+Bar  371 | 15:25 | 8286.6/8286.6/8283.6/8284.5 | Entry: - | SL: - | Close: 8284.5 | MARKET CLOSE: All trades closed
+Bar  447 | 10:26 | 8291.4/8296.5/8290.8/8296.5 | Entry: - | SL: - | Close: 8296.5 | LONG BREAKOUT: Pivot 8296.4 broken, High: 8296.5
+Bar  448 | 10:27 | 8296.1/8297.2/8295.4/8297.0 | Entry: - | SL: - | Close: 8297.0 | LONG BREAKOUT: Pivot 8296.4 broken, High: 8297.2
+Bar  449 | 10:28 | 8297.0/8297.3/8295.7/8296.4 | Entry: - | SL: - | Close: 8296.4 | MARKING CANDLE FOUND (LONG): Red candle, close in range [8295.4-8297.2]
+Bar  449 | 10:28 | 8297.0/8297.3/8295.7/8296.4 | Entry: 8297.4 | SL: 8295.7 | Close: 8296.4 | SETUP ACTIVATED: Entry 8297.4, SL 8295.7 (distance: 1.7, max: 8.3)
+Bar  450 | 10:29 | 8296.5/8296.9/8292.3/8293.4 | Entry: 8297.0 | SL: 8292.3 | Close: 8293.4 | MARKING UPDATE #1 (LONG Red): Entry 8297.4→8297.0, SL 8295.7→8292.3
+Bar  451 | 10:30 | 8292.8/8294.1/8291.5/8292.8 | Entry: 8294.2 | SL: 8291.5 | Close: 8292.8 | MARKING UPDATE #2 (LONG Green): Entry 8297.0→8294.2, SL 8292.3→8291.5
+Bar  452 | 10:31 | 8292.3/8293.0/8289.5/8291.2 | Entry: 8293.1 | SL: 8289.5 | Close: 8291.2 | MARKING UPDATE #3 (LONG Red): Entry 8294.2→8293.1, SL 8291.5→8289.5
+Bar  453 | 10:32 | 8290.9/8293.2/8290.6/8292.2 | Entry: 8293.1 | SL: 8289.5 | Close: 8292.2 | TRADE ENTRY: LONG @ 8293.1 (High: 8293.2 > Entry)
+Bar  455 | 10:34 | 8290.9/8291.5/8287.8/8288.0 | Entry: - | SL: - | Close: 8288.0 | TRADE EXIT: SL @ 8289.5
+
+
+================================================================================
+TRADE SETUP #3 VALIDATION (PIVOT TRAIL EXIT)
+================================================================================
+Bar  751 | 09:15 | 8346.1/8354.9/8338.5/8354.9 | Entry: - | SL: - | Close: 8354.9 | LONG BREAKOUT: Pivot 8332.2 broken, High: 8354.9
+Bar  752 | 09:16 | 8355.1/8355.9/8348.5/8349.0 | Entry: - | SL: - | Close: 8349.0 | MARKING CANDLE FOUND (LONG): Red candle, close in range [8338.5-8354.9]
+Bar  752 | 09:16 | 8355.1/8355.9/8348.5/8349.0 | Entry: 8356.0 | SL: 8348.5 | Close: 8349.0 | SETUP ACTIVATED: Entry 8356.0, SL 8348.5 (distance: 7.5, max: 8.4)
+Bar  753 | 09:17 | 8348.7/8349.0/8343.2/8344.1 | Entry: 8349.1 | SL: 8343.2 | Close: 8344.1 | MARKING UPDATE #1 (LONG Red): Entry 8356.0→8349.1, SL 8348.5→8343.2
+Bar  754 | 09:18 | 8344.5/8345.0/8341.0/8342.0 | Entry: 8345.1 | SL: 8341.0 | Close: 8342.0 | MARKING UPDATE #2 (LONG Red): Entry 8349.1→8345.1, SL 8343.2→8341.0
+Bar  755 | 09:19 | 8342.5/8343.0/8339.5/8340.8 | Entry: 8343.1 | SL: 8339.5 | Close: 8340.8 | MARKING UPDATE #3 (LONG Red): Entry 8345.1→8343.1, SL 8341.0→8339.5
+Bar  756 | 09:20 | 8340.4/8340.8/8336.9/8339.0 | Entry: 8343.1 | SL: 8339.5 | Close: 8339.0 | MAX UPDATES REACHED: Trade setup ignored (>3 updates)
+
+
+================================================================================
+TRADE SETUP #4 VALIDATION (PIVOT TRAIL EXIT)
+================================================================================
+Bar  757 | 09:21 | 8339.8/8342.6/8339.0/8340.6 | Entry: - | SL: - | Close: 8340.6 | LONG BREAKOUT: Pivot 8332.2 broken, High: 8342.6
+Bar  758 | 09:22 | 8340.5/8341.0/8333.0/8333.0 | Entry: - | SL: - | Close: 8333.0 | RED CANDLE: Close 8333.0 outside breakout range [8339.0-8342.6]
+Bar  759 | 09:23 | 8333.3/8333.8/8325.6/8326.1 | Entry: - | SL: - | Close: 8326.1 | RED CANDLE: Close 8326.1 outside breakout range [8339.0-8342.6]
+Bar  760 | 09:24 | 8326.0/8335.1/8326.0/8334.1 | Entry: - | SL: - | Close: 8334.1 | LONG BREAKOUT: Pivot 8332.2 broken, High: 8335.1
+Bar  761 | 09:25 | 8334.4/8335.6/8324.4/8330.8 | Entry: - | SL: - | Close: 8330.8 | MARKING CANDLE FOUND (LONG): Red candle, close in range [8326.0-8335.1]
+Bar  761 | 09:25 | 8334.4/8335.6/8324.4/8330.8 | Entry: - | SL: - | Close: 8330.8 | SETUP REJECTED: SL distance 11.3 > 0.1% of entry (8.3)
+
+
+================================================================================
+TRADE SETUP #5 VALIDATION (PIVOT TRAIL EXIT)
+================================================================================
+Bar  763 | 09:27 | 8331.0/8336.4/8331.0/8336.4 | Entry: - | SL: - | Close: 8336.4 | LONG BREAKOUT: Pivot 8332.2 broken, High: 8336.4
+Bar  764 | 09:28 | 8336.0/8339.1/8334.5/8338.4 | Entry: - | SL: - | Close: 8338.4 | LONG BREAKOUT: Pivot 8332.2 broken, High: 8339.1
+Bar  765 | 09:29 | 8338.1/8338.4/8328.2/8331.0 | Entry: - | SL: - | Close: 8331.0 | RED CANDLE: Close 8331.0 outside breakout range [8334.5-8339.1]
+Bar  766 | 09:30 | 8331.5/8331.5/8325.5/8326.3 | Entry: - | SL: - | Close: 8326.3 | RED CANDLE: Close 8326.3 outside breakout range [8334.5-8339.1]
+Bar  767 | 09:31 | 8326.2/8326.3/8323.3/8323.6 | Entry: - | SL: - | Close: 8323.6 | RED CANDLE: Close 8323.6 outside breakout range [8334.5-8339.1]
+Bar  768 | 09:32 | 8323.8/8334.0/8323.5/8333.4 | Entry: - | SL: - | Close: 8333.4 | LONG BREAKOUT: Pivot 8332.2 broken, High: 8334.0
+Bar  769 | 09:33 | 8333.2/8334.8/8330.7/8330.8 | Entry: - | SL: - | Close: 8330.8 | MARKING CANDLE FOUND (LONG): Red candle, close in range [8323.5-8334.0]
+Bar  769 | 09:33 | 8333.2/8334.8/8330.7/8330.8 | Entry: 8334.9 | SL: 8330.7 | Close: 8330.8 | SETUP ACTIVATED: Entry 8334.9, SL 8330.7 (distance: 4.2, max: 8.3)
+Bar  770 | 09:34 | 8330.7/8332.8/8327.8/8327.8 | Entry: 8332.9 | SL: 8327.8 | Close: 8327.8 | MARKING UPDATE #1 (LONG Red): Entry 8334.9→8332.9, SL 8330.7→8327.8
+Bar  771 | 09:35 | 8328.2/8328.2/8323.0/8323.0 | Entry: 8328.3 | SL: 8323.0 | Close: 8323.0 | MARKING UPDATE #2 (LONG Red): Entry 8332.9→8328.3, SL 8327.8→8323.0
+Bar  772 | 09:36 | 8322.9/8325.8/8322.0/8325.2 | Entry: 8325.9 | SL: 8322.0 | Close: 8325.2 | MARKING UPDATE #3 (LONG Green): Entry 8328.3→8325.9, SL 8323.0→8322.0
+Bar  773 | 09:37 | 8325.2/8330.0/8325.2/8329.8 | Entry: 8325.9 | SL: 8322.0 | Close: 8329.8 | TRADE ENTRY: LONG @ 8325.9 (High: 8330.0 > Entry)
+Bar  818 | 10:22 | 8332.8/8334.0/8332.5/8333.5 | Entry: - | SL: - | Close: 8333.5 | TRADE EXIT: PIVOT_TRAIL @ 8333.1
+
