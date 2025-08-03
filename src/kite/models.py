@@ -27,6 +27,14 @@ class ProductType(Enum):
     NRML = "NRML"  # Normal
 
 
+class OrderVariety(Enum):
+    """Order varieties."""
+    REGULAR = "regular"
+    AMO = "amo"  # After Market Order
+    CO = "co"    # Cover Order
+    ICEBERG = "iceberg"
+
+
 class Exchange(Enum):
     """Exchanges."""
     NSE = "NSE"
@@ -41,6 +49,7 @@ class Exchange(Enum):
 class OrderRequest:
     """Order placement request."""
     
+    variety: OrderVariety
     tradingsymbol: str
     exchange: Exchange
     transaction_type: TransactionType

@@ -12,6 +12,7 @@ from kite.models import (
     OrderType,
     TransactionType,
     ProductType,
+    OrderVariety,
     Exchange,
 )
 from kite.client import KiteClient
@@ -40,6 +41,13 @@ def render_order_form(kite_client: KiteClient) -> None:
                 options=[e.value for e in Exchange],
                 index=0,
                 help="Select the exchange"
+            )
+            
+            variety = st.selectbox(
+                "Order Variety",
+                options=[v.value for v in OrderVariety],
+                index=0,
+                help="Order variety (regular, amo, co, iceberg)"
             )
             
             transaction_type = st.selectbox(
@@ -117,6 +125,7 @@ def render_order_form(kite_client: KiteClient) -> None:
                 
                 # Create order request
                 order_request = OrderRequest(
+                    variety=OrderVariety(variety),
                     tradingsymbol=tradingsymbol.upper(),
                     exchange=Exchange(exchange),
                     transaction_type=TransactionType(transaction_type),

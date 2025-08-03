@@ -52,6 +52,7 @@ class KiteClient:
         """
         try:
             order_params = {
+                "variety": order_request.variety.value,
                 "tradingsymbol": order_request.tradingsymbol,
                 "exchange": order_request.exchange.value,
                 "transaction_type": order_request.transaction_type.value,
@@ -71,15 +72,25 @@ class KiteClient:
             if order_request.tag is not None:
                 order_params["tag"] = order_request.tag
                 
+            logger.info(f"Placing order with params: {order_params}")
             response = self.kite.place_order(**order_params)
-            order_id = response["order_id"]
+            logger.info(f"API response: {response} (type: {type(response)})")
+            
+            # Handle different response formats
+            if isinstance(response, dict):
+                order_id = response.get("order_id", str(response))
+            else:
+                # Response might be just the order ID as a string
+                order_id = str(response)
             
             logger.info(f"Order placed successfully: {order_id}")
             return order_id
             
         except Exception as e:
             logger.error(f"Failed to place order: {e}")
-            raise
+            if 'order_params' in locals():
+                logger.error(f"Order params: {order_params}")
+            raise Exception(f"Order placement failed: {str(e)}")
     
     def get_orders(self) -> List[Order]:
         """Get all orders for the day.
@@ -92,11 +103,17 @@ class KiteClient:
             orders = []
             
             for order_data in orders_data:
+                # Handle order_timestamp - could be string or datetime
+                order_timestamp = order_data["order_timestamp"]
+                if isinstance(order_timestamp, str):
+                    order_timestamp = datetime.strptime(order_timestamp, "%Y-%m-%d %H:%M:%S")
+                elif not isinstance(order_timestamp, datetime):
+                    # If it's neither string nor datetime, convert to datetime
+                    order_timestamp = datetime.now()
+                
                 order = Order(
                     order_id=order_data["order_id"],
-                    order_timestamp=datetime.strptime(
-                        order_data["order_timestamp"], "%Y-%m-%d %H:%M:%S"
-                    ),
+                    order_timestamp=order_timestamp,
                     exchange_order_id=order_data.get("exchange_order_id"),
                     tradingsymbol=order_data["tradingsymbol"],
                     exchange=order_data["exchange"],

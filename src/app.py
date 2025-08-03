@@ -23,6 +23,8 @@ from ui.components import (
     render_margins_info,
     render_profile_info,
 )
+# from ui.strategy_components import render_strategy_dashboard, render_strategy_management
+# from strategies import StrategyManager
 
 # Configure logging
 logging.basicConfig(
@@ -61,9 +63,10 @@ def get_kite_client() -> Optional[KiteClient]:
                     access_token=config.kite.access_token,
                     api_secret=config.kite.api_secret
                 )
-            except Exception:
+            except Exception as e:
                 # Connection failed, token might be invalid
-                pass
+                st.error(f"Connection test failed: {e}")
+                return None
         
         return None
         
@@ -83,6 +86,8 @@ def main():
         st.session_state.authenticated = False
     if 'auth_in_progress' not in st.session_state:
         st.session_state.auth_in_progress = False
+    if 'strategy_manager' not in st.session_state:
+        st.session_state.strategy_manager = None
     
     # Initialize configuration
     try:
@@ -93,7 +98,28 @@ def main():
         st.stop()
     
     # Try to get authenticated client
-    kite_client = get_kite_client()
+    kite_client = None
+    
+    # Direct authentication check - bypass session state complexity
+    try:
+        kite_connect = get_auto_authenticated_client(config.kite)
+        if kite_connect:
+            # Test the connection
+            profile_test = kite_connect.profile()
+            kite_client = KiteClient(
+                api_key=config.kite.api_key,
+                access_token=config.kite.access_token,
+                api_secret=config.kite.api_secret
+            )
+            st.session_state.authenticated = True
+            st.session_state.auth_in_progress = False
+        else:
+            # Clear any cached client
+            get_kite_client.clear()
+    except Exception as e:
+        st.warning(f"Authentication check failed: {e}")
+        get_kite_client.clear()
+        kite_client = None
     
     # If not authenticated, show auto-login
     if not kite_client and not st.session_state.authenticated:
@@ -127,6 +153,10 @@ def main():
     if kite_client:
         st.session_state.authenticated = True
         st.session_state.auth_in_progress = False
+        
+        # Initialize strategy manager
+        # if st.session_state.strategy_manager is None:
+        #     st.session_state.strategy_manager = StrategyManager(kite_client)
     
     # Show user info and logout option in sidebar
     with st.sidebar:
