@@ -15,6 +15,7 @@ from typing import Optional
 from config import AppConfig
 from kite.client import KiteClient
 from auto_auth import render_auto_login, get_auto_authenticated_client
+from streamlit_auth import render_streamlit_auth, get_streamlit_authenticated_client
 from ui.components import (
     render_order_form,
     render_orders_table,
@@ -32,6 +33,8 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
+logger = logging.getLogger(__name__)
+
 # Page configuration
 st.set_page_config(
     page_title="Kite Trading System",
@@ -41,9 +44,8 @@ st.set_page_config(
 )
 
 
-@st.cache_resource
 def get_kite_client() -> Optional[KiteClient]:
-    """Get cached Kite client instance.
+    """Get Kite client instance (no caching to ensure fresh tokens).
     
     Returns:
         KiteClient instance or None if configuration fails
@@ -52,12 +54,13 @@ def get_kite_client() -> Optional[KiteClient]:
         config = AppConfig.from_env()
         
         # Try to get auto-authenticated client
-        kite_connect = get_auto_authenticated_client(config.kite)
+        kite_connect = get_streamlit_authenticated_client(config.kite)
         
         if kite_connect:
             # Test the connection
             try:
-                kite_connect.profile()
+                profile = kite_connect.profile()
+                logger.info(f"Successfully authenticated as: {profile.get('user_id', 'Unknown')}")
                 return KiteClient(
                     api_key=config.kite.api_key,
                     access_token=config.kite.access_token,
@@ -65,14 +68,13 @@ def get_kite_client() -> Optional[KiteClient]:
                 )
             except Exception as e:
                 # Connection failed, token might be invalid
-                st.error(f"Connection test failed: {e}")
+                logger.error(f"Connection test failed: {e}")
                 return None
         
         return None
         
     except Exception as e:
-        st.error(f"Failed to initialize configuration: {str(e)}")
-        st.info("Please check your .env file and ensure all required variables are set correctly.")
+        logger.error(f"Failed to initialize configuration: {str(e)}")
         return None
 
 
@@ -97,12 +99,12 @@ def main():
         st.info("Please check your .env file and ensure all required variables are set correctly.")
         st.stop()
     
-    # Try to get authenticated client
+    # Try to get authenticated client using the new streamlit auth
     kite_client = None
     
-    # Direct authentication check - bypass session state complexity
+    # Direct authentication check
     try:
-        kite_connect = get_auto_authenticated_client(config.kite)
+        kite_connect = get_streamlit_authenticated_client(config.kite)
         if kite_connect:
             # Test the connection
             profile_test = kite_connect.profile()
@@ -114,31 +116,28 @@ def main():
             st.session_state.authenticated = True
             st.session_state.auth_in_progress = False
         else:
-            # Clear any cached client
-            get_kite_client.clear()
+            kite_client = None
     except Exception as e:
         st.warning(f"Authentication check failed: {e}")
-        get_kite_client.clear()
         kite_client = None
     
-    # If not authenticated, show auto-login
+    # If not authenticated, show streamlit auth
     if not kite_client and not st.session_state.authenticated:
-        if not st.session_state.auth_in_progress:
-            st.session_state.auth_in_progress = True
-            
-        authenticated, kite_connect = render_auto_login(config.kite)
+        authenticated, kite_connect = render_streamlit_auth(config.kite)
         
-        if authenticated and kite_connect:
-            # Clear cache and create our KiteClient wrapper
-            get_kite_client.clear()
+        if authenticated:
             st.session_state.authenticated = True
             st.session_state.auth_in_progress = False
             
-            kite_client = KiteClient(
-                api_key=config.kite.api_key,
-                access_token=config.kite.access_token,
-                api_secret=config.kite.api_secret
-            )
+            if kite_connect:
+                kite_client = KiteClient(
+                    api_key=config.kite.api_key,
+                    access_token=config.kite.access_token,
+                    api_secret=config.kite.api_secret
+                )
+            else:
+                # Authentication complete, rerun to load with new token
+                st.rerun()
         else:
             st.stop()
     elif st.session_state.authenticated and not kite_client:
@@ -208,8 +207,7 @@ def main():
                 if token_file.exists():
                     token_file.unlink()
                 
-                # Clear cache and session state
-                get_kite_client.clear()
+                # Clear session state
                 st.session_state.authenticated = False
                 st.session_state.auth_in_progress = False
                 
